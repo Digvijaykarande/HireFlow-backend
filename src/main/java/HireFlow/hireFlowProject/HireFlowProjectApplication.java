@@ -77,5 +77,10 @@ GET /api/applications/job/{jobId}  (only recruiter can see)
 PUT /api/applications/{applicationId}/status
 
 
+GET /api/interviews/my         
+GET /api/interviews/job/{jobId}  (only recruiter can see)
+PUT /api/interviews/{id}/complete
+PUT /api/interviews/{id}/cancel
+
  */
 
