@@ -18,9 +18,6 @@ import HireFlow.hireFlowProject.users.model.User;
 import HireFlow.hireFlowProject.users.service.UserService;
 import jakarta.validation.Valid;
 
-
-
-
 @RestController
 @CrossOrigin
 @RequestMapping("/api")

@@ -34,6 +34,7 @@ public class CompanyController {
     }
 
     @GetMapping
+    
     public List<Company> getCompanies() {
         return service.getAllCompanies();
     }
