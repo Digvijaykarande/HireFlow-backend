@@ -11,6 +11,21 @@ public class UserResponse {
     private String role;
 
     private Boolean isVerified;
+    
+    private String Heading;
+    
+    private String location;
+    
+    private String profileUrl;
+    
+    private String resumeUrl;
+    
+    private String phone;
+    
+    private String createdAt;
+    
+    private String updatedAt;
+    
 
 	public String getId() {
 		return id;
@@ -52,6 +67,61 @@ public class UserResponse {
 		this.isVerified = isVerified;
 	}
 
+	public String getHeading() {
+		return Heading;
+	}
 
+	public void setHeading(String heading) {
+		Heading = heading;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getProfileUrl() {
+		return profileUrl;
+	}
+
+	public void setProfileUrl(String profileUrl) {
+		this.profileUrl = profileUrl;
+	}
+
+	public String getResumeUrl() {
+		return resumeUrl;
+	}
+
+	public void setResumeUrl(String resumeUrl) {
+		this.resumeUrl = resumeUrl;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public String getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(String updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+	
     
 }

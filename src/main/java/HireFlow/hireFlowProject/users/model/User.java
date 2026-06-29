@@ -15,6 +15,16 @@ public class User {
 	
 	private String password;
 	
+	private String phone;
+	private String resumeUrl;
+	
+	@Indexed
+	private String heading;
+	
+	@Indexed
+	private String location;
+	private String resumePublicId;
+	
 	@Indexed(unique = true)
 	private String email;
 	
@@ -25,24 +35,38 @@ public class User {
 	
 	private String profileUrl;
 	
+	private String profilePublicId;
+	
 	private LocalDateTime createdAt;
+	
+	private LocalDateTime updatedAt;
+	
 	
 	public User() {
 		
 	}
-	
-	public User(String id, String name, String password, String email, String role, boolean isVerified,
-			String profileUrl, LocalDateTime createdAt) {
+
+	public User(String id, String name, String password, String phone, String resumeUrl, String heading,
+			String location, String resumePublicId, String email, String role, boolean isVerified, String profileUrl,
+			String profilePublicId, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.password = password;
+		this.phone = phone;
+		this.resumeUrl = resumeUrl;
+		this.heading = heading;
+		this.location = location;
+		this.resumePublicId = resumePublicId;
 		this.email = email;
 		this.role = role;
 		this.isVerified = isVerified;
 		this.profileUrl = profileUrl;
-		this.createdAt=createdAt;
+		this.profilePublicId = profilePublicId;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 	}
+
 	public String getId() {
 		return id;
 	}
@@ -93,6 +117,64 @@ public class User {
 
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
+	}
+	
+	
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getResumeUrl() {
+		return resumeUrl;
+	}
+
+	public void setResumeUrl(String resumeUrl) {
+		this.resumeUrl = resumeUrl;
+	}
+
+	public String getHeading() {
+		return heading;
+	}
+
+	public void setHeading(String heading) {
+		this.heading = heading;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getResumePublicId() {
+		return resumePublicId;
+	}
+
+	public void setResumePublicId(String resumePublicId) {
+		this.resumePublicId = resumePublicId;
+	}
+
+	public String getProfilePublicId() {
+		return profilePublicId;
+	}
+
+	public void setProfilePublicId(String profilePublicId) {
+		this.profilePublicId = profilePublicId;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 
 	@Override
