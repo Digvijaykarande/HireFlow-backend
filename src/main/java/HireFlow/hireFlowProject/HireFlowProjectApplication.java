@@ -14,73 +14,187 @@ public class HireFlowProjectApplication {
 
 
 /*
- 
- POST /api/auth/register
- POST /api/auth/login
- GET /api/users
- GET /api/users/{userId}       Get User By Id
- 
- POST /api/users			   Create User
- 
- 
- PUT /api/users					update user
- DELETE /api/users/{userId} 	delete user
- 
- 
- POST /api/companies 			create company
- {
-  "name":"TechNova",
-  "description":"Software Company",
-  "industry":"IT",
-  "location":"Pune",
-  "companySize":150
-}
+===============================================================================
+                             H I R E F L O W   A P I
+===============================================================================
 
-GET /api/companies 				get all companies
-GET /api/companies/{companyId}
-PUT /api/companies/{companyId}
-DELETE /api/companies/{companyId}
+Base URL:
+http://localhost:8080/api
 
+===============================================================================
+AUTHENTICATION
+===============================================================================
 
+POST    /api/auth/register              Register new user
+POST    /api/auth/login                 Login user
 
-POST /api/jobs					create job
+===============================================================================
+USER APIs
+===============================================================================
+
+GET     /api/users                      Get all users
+GET     /api/users/me                   Get logged-in user
+GET     /api/users/{userId}             Get user by ID
+
+POST    /api/users                      Create user
+PUT     /api/users/profile              Update profile
+DELETE  /api/users/{userId}             Delete user
+
+===============================================================================
+COMPANY APIs
+===============================================================================
+
+POST    /api/companies                  Create company
+
+Example Body:
 {
-  "companyId":"685abc123",
-  "title":"Java Backend Developer",
-  "description":"Spring Boot Developer",
-  "skills":["Java","Spring Boot","MongoDB"],
-  "location":"Pune",
-  "salaryMin":600000,
-  "salaryMax":1200000,
-  "status":"OPEN"
+    "name": "TechNova",
+    "description": "Software Company",
+    "industry": "IT",
+    "location": "Pune",
+    "companySize": 150
 }
 
+GET     /api/companies                  Get all companies
+GET     /api/companies/{companyId}      Get company by ID
+PUT     /api/companies/{companyId}      Update company
+DELETE  /api/companies/{companyId}      Delete company
 
-GET /api/jobs
-GET /api/jobs/{jobId}
-PUT /api/jobs/{jobId}
-DELETE /api/jobs/{jobId}
-GET /api/jobs/search?keyword=java
-GET /api/jobs/location/{location}
-GET /api/jobs/status/{status}
+===============================================================================
+JOB APIs
+===============================================================================
 
+POST    /api/jobs                       Create job
 
-POST /api/applications 				 apply for job
+Example Body:
 {
-  "jobId":"685abc123",
-  "coverLetter":"I am interested",
-  "resumeUrl":"resume.pdf"
+    "companyId": "685abc123",
+    "title": "Java Backend Developer",
+    "description": "Spring Boot Developer",
+    "skills": ["Java", "Spring Boot", "MongoDB"],
+    "location": "Pune",
+    "salaryMin": 600000,
+    "salaryMax": 1200000,
+    "status": "OPEN"
 }
 
-GET /api/applications/my 				view applied jobs
-GET /api/applications/job/{jobId}  (only recruiter can see)
-PUT /api/applications/{applicationId}/status
+GET     /api/jobs                       Get all jobs
+GET     /api/jobs/{jobId}               Get job by ID
+PUT     /api/jobs/{jobId}               Update job
+DELETE  /api/jobs/{jobId}               Delete job
 
+GET     /api/jobs/search?keyword=java   Search jobs
+GET     /api/jobs/location/{location}   Filter by location
+GET     /api/jobs/status/{status}       Filter by status
 
-GET /api/interviews/my         
-GET /api/interviews/job/{jobId}  (only recruiter can see)
-PUT /api/interviews/{id}/complete
-PUT /api/interviews/{id}/cancel
+===============================================================================
+APPLICATION APIs
+===============================================================================
 
- */
+POST    /api/applications               Apply for a job
 
+Example Body:
+{
+    "jobId": "685abc123",
+    "coverLetter": "I am interested",
+    "resumeUrl": "resume.pdf"
+}
+
+GET     /api/applications/my                    My applications
+GET     /api/applications/job/{jobId}           Applications for a job (Recruiter)
+PUT     /api/applications/{applicationId}/status Update application status
+
+===============================================================================
+INTERVIEW APIs
+===============================================================================
+
+GET     /api/interviews/my              My interviews
+GET     /api/interviews/job/{jobId}     Interviews for job (Recruiter)
+
+PUT     /api/interviews/{id}/complete   Mark interview completed
+PUT     /api/interviews/{id}/cancel     Cancel interview
+
+===============================================================================
+FILE UPLOAD APIs
+===============================================================================
+
+POST    /api/upload/resume              Upload resume
+POST    /api/upload/profile-picture     Upload profile picture
+POST    /api/upload/company-logo        Upload company logo
+
+===============================================================================
+DASHBOARD APIs
+===============================================================================
+
+GET     /api/dashboard/recruiter
+
+Returns:
+- Total Jobs
+- Active Jobs
+- Total Applications
+- Scheduled Interviews
+- Total Hires
+
+GET     /api/dashboard/candidate
+
+Returns:
+- Jobs Applied
+- Interviews
+- Offers
+- Saved Jobs
+- Recent Applications
+
+===============================================================================
+SAVED JOB APIs
+===============================================================================
+
+POST    /api/saved-jobs/{jobId}         Save job
+GET     /api/saved-jobs                 Get saved jobs
+DELETE  /api/saved-jobs/{jobId}         Remove saved job
+
+===============================================================================
+AUTHENTICATION
+===============================================================================
+
+Except:
+
+POST    /api/auth/register
+POST    /api/auth/login
+
+All APIs require:
+
+Authorization: Bearer <JWT_TOKEN>
+
+===============================================================================
+ROLES
+===============================================================================
+
+Candidate
+- Manage profile
+- Apply for jobs
+- Save jobs
+- View interviews
+
+Recruiter
+- Manage companies
+- Manage jobs
+- View applications
+- Schedule interviews
+
+Admin
+- Full access (if implemented)
+
+===============================================================================
+HTTP STATUS CODES
+===============================================================================
+
+200  OK
+201  Created
+400  Bad Request
+401  Unauthorized
+403  Forbidden
+404  Not Found
+500  Internal Server Error
+
+===============================================================================
+*/

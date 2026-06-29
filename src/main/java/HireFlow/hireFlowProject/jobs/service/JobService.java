@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import HireFlow.hireFlowProject.cache.JobCacheService;
 import HireFlow.hireFlowProject.jobs.model.Job;
 import HireFlow.hireFlowProject.jobs.repository.JobRepository;
 import org.springframework.security.core.Authentication;
@@ -13,75 +14,94 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @Service
 public class JobService {
 
-    private final JobRepository jobRepo;
+	private final JobRepository jobRepo;
 
-    public JobService(JobRepository jobRepo) {
-        this.jobRepo = jobRepo;
-    }
+	private final JobCacheService cacheService;
 
-    public List<Job> getJobs() {
-        return jobRepo.findAll();
-    }
+	public JobService(JobRepository jobRepo, JobCacheService cacheService) {
 
-    public Job getJobById(String jobId) {
+		this.jobRepo = jobRepo;
+		this.cacheService = cacheService;
+	}
 
-        return jobRepo.findById(jobId)
-                .orElseThrow(() ->
-                        new RuntimeException("Job Not Found"));
-    }
+	public List<Job> getJobs() {
 
-    public Job createJob(Job job) {
-    	Authentication auth =
-                SecurityContextHolder
-                        .getContext()
-                        .getAuthentication();
+		List<Job> cachedJobs = cacheService.getAllJobs();
 
-        job.setCreatedBy(auth.getName());
+		if (cachedJobs != null) {
 
-        job.setCreatedAt(LocalDateTime.now());
+			System.out.println("Returned from Redis");
 
-        return jobRepo.save(job);
-    }
+			return cachedJobs;
+		}
 
-    public Job updateJob(String jobId, Job updatedJob) {
+		System.out.println("Returned from MongoDB");
 
-        Job existingJob = getJobById(jobId);
+		List<Job> jobs = jobRepo.findAll();
 
-        existingJob.setTitle(updatedJob.getTitle());
-        existingJob.setDescription(updatedJob.getDescription());
-        existingJob.setSkills(updatedJob.getSkills());
+		cacheService.saveAllJobs(jobs);
 
-        if(updatedJob.getLocation() != null) {
-            existingJob.setLocation(
-                updatedJob.getLocation()
-                    .trim()
-                    .toUpperCase()
-            );
-        }
+		return jobs;
+	}
 
-        existingJob.setSalaryMin(updatedJob.getSalaryMin());
-        existingJob.setSalaryMax(updatedJob.getSalaryMax());
-        existingJob.setStatus(updatedJob.getStatus());
+	public Job getJobById(String jobId) {
 
-        return jobRepo.save(existingJob);
-    }
+		return jobRepo.findById(jobId).orElseThrow(() -> new RuntimeException("Job Not Found"));
+	}
 
-    public void deleteJob(String jobId) {
+	public Job createJob(Job job) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        Job job = getJobById(jobId);
+		job.setCreatedBy(auth.getName());
 
-        jobRepo.delete(job);
-    }
+		job.setCreatedAt(LocalDateTime.now());
+		
+		Job savedJob=jobRepo.save(job);
+		cacheService.clearAllJobsCache();
+		return savedJob;
+		
+	}
 
-    public List<Job> getJobsByLocation(String location) {
-        return jobRepo.findByLocationIgnoreCase(location);
-    }
+	public Job updateJob(String jobId, Job updatedJob) {
 
-    public List<Job> getJobsByStatus(String status) {
-        return jobRepo.findByStatus(status);
-    }
-    
-    public List<Job> searchJobs(String keyword){
-        return jobRepo.findByTitleContainingIgnoreCase(keyword);
-    }
+		Job existingJob = getJobById(jobId);
+
+		existingJob.setTitle(updatedJob.getTitle());
+		existingJob.setDescription(updatedJob.getDescription());
+		existingJob.setSkills(updatedJob.getSkills());
+
+		if (updatedJob.getLocation() != null) {
+			existingJob.setLocation(updatedJob.getLocation().trim().toUpperCase());
+		}
+
+		existingJob.setSalaryMin(updatedJob.getSalaryMin());
+		existingJob.setSalaryMax(updatedJob.getSalaryMax());
+		existingJob.setStatus(updatedJob.getStatus());
+
+		 Job savedJob =jobRepo.save(existingJob);
+
+		 cacheService.clearAllJobsCache();
+
+		 return savedJob;
+	}
+
+	public void deleteJob(String jobId) {
+
+		Job job = getJobById(jobId);
+
+		jobRepo.delete(job);
+		cacheService.clearAllJobsCache();
+	}
+
+	public List<Job> getJobsByLocation(String location) {
+		return jobRepo.findByLocationIgnoreCase(location);
+	}
+
+	public List<Job> getJobsByStatus(String status) {
+		return jobRepo.findByStatus(status);
+	}
+
+	public List<Job> searchJobs(String keyword) {
+		return jobRepo.findByTitleContainingIgnoreCase(keyword);
+	}
 }
