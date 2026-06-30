@@ -7,13 +7,11 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import HireFlow.hireFlowProject.savedJobs.model.SavedJob;
 
+public interface SavedJobRepository extends MongoRepository<SavedJob, String> {
 
-public interface SavedJobRepository
-        extends MongoRepository<SavedJob, String> {
+	List<SavedJob> findByCandidateEmail(String candidateEmail);
 
-    List<SavedJob> findByCandidateEmail(String candidateEmail);
+	Optional<SavedJob> findByCandidateEmailAndJobId(String candidateEmail, String jobId);
 
-    Optional<SavedJob> findByCandidateEmailAndJobId(
-            String candidateEmail,
-            String jobId);
+	long countByCandidateEmail(String candidateEmail);
 }

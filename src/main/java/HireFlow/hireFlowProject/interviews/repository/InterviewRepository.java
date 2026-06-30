@@ -6,12 +6,15 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import HireFlow.hireFlowProject.interviews.model.Interview;
 
-public interface InterviewRepository
-        extends MongoRepository<Interview, String>{
+public interface InterviewRepository extends MongoRepository<Interview, String> {
 
-    List<Interview> findByCandidateEmail(String candidateEmail);
+	List<Interview> findByCandidateEmail(String candidateEmail);
 
-    List<Interview> findByJobId(String jobId);
+	List<Interview> findByJobId(String jobId);
 
-    List<Interview> findByApplicationId(String applicationId);
+	List<Interview> findByApplicationId(String applicationId);
+
+	long countByCandidateEmailAndStatus(String candidateEmail, String status);
+
+	long countByJobIdInAndStatus(List<String> jobIds, String status);
 }

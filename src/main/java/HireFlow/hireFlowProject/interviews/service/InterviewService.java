@@ -11,137 +11,102 @@ import HireFlow.hireFlowProject.applications.repository.ApplicationRepository;
 import HireFlow.hireFlowProject.interviews.dto.CreateInterviewRequest;
 import HireFlow.hireFlowProject.interviews.model.Interview;
 import HireFlow.hireFlowProject.interviews.repository.InterviewRepository;
-
+import HireFlow.hireFlowProject.notifications.service.NotificationService;
 
 @Service
 public class InterviewService {
-	
-    private final InterviewRepository interviewRepo;
-    
-    private final ApplicationRepository applicationRepo;
 
-    public InterviewService(
-            InterviewRepository interviewRepo,
-            ApplicationRepository applicationRepo) {
+	private final InterviewRepository interviewRepo;
 
-        this.interviewRepo = interviewRepo;
-        this.applicationRepo = applicationRepo;
-    }
+	private final ApplicationRepository applicationRepo;
 
-    public Interview scheduleInterview(
-            CreateInterviewRequest request) {
+	private final NotificationService notificationService;
 
-        Application application =
-                applicationRepo.findById(
-                        request.getApplicationId())
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Application not found"));
+	public InterviewService(InterviewRepository interviewRepo, ApplicationRepository applicationRepo,
+			NotificationService notificationService) {
 
-        Interview interview =
-                new Interview();
+		this.interviewRepo = interviewRepo;
+		this.applicationRepo = applicationRepo;
+		this.notificationService = notificationService;
+	}
 
-        interview.setApplicationId(
-                request.getApplicationId());
+	public Interview scheduleInterview(CreateInterviewRequest request) {
 
-        interview.setJobId(
-                request.getJobId());
+		Application application = applicationRepo.findById(request.getApplicationId())
+				.orElseThrow(() -> new RuntimeException("Application not found"));
 
-        interview.setCandidateEmail(
-                request.getCandidateEmail());
+		Interview interview = new Interview();
 
-        interview.setInterviewDate(
-                request.getInterviewDate());
+		interview.setApplicationId(request.getApplicationId());
 
-        interview.setMode(
-                request.getMode());
+		interview.setJobId(request.getJobId());
 
-        interview.setMeetingLink(
-                request.getMeetingLink());
+		interview.setCandidateEmail(request.getCandidateEmail());
 
-        interview.setAddress(
-                request.getAddress());
+		interview.setInterviewDate(request.getInterviewDate());
 
-        interview.setNotes(
-                request.getNotes());
+		interview.setMode(request.getMode());
 
-        interview.setStatus(
-                "SCHEDULED");
+		interview.setMeetingLink(request.getMeetingLink());
 
-        interview.setCreatedAt(
-                LocalDateTime.now());
+		interview.setAddress(request.getAddress());
 
-        Interview saved =
-                interviewRepo.save(interview);
+		interview.setNotes(request.getNotes());
 
-        application.setStatus(
-                "INTERVIEW_SCHEDULED");
+		interview.setStatus("SCHEDULED");
 
-        applicationRepo.save(application);
+		interview.setCreatedAt(LocalDateTime.now());
 
-        return saved;
-    }
+		Interview saved = interviewRepo.save(interview);
 
-    public List<Interview> getMyInterviews() {
+		application.setStatus("INTERVIEW_SCHEDULED");
 
-        String email =
-                SecurityContextHolder
-                        .getContext()
-                        .getAuthentication()
-                        .getName();
+		notificationService.createNotification(interview.getCandidateEmail(), "Interview Scheduled",
+				"Interview scheduled for " + interview.getInterviewDate(), "INTERVIEW", saved.getId(), "INTERVIEW",
+				"/interviews/" + saved.getId());
+		applicationRepo.save(application);
 
-        return interviewRepo
-                .findByCandidateEmail(email);
-    }
+		return saved;
+	}
 
-    public List<Interview> getJobInterviews(
-            String jobId) {
+	public List<Interview> getMyInterviews() {
 
-        return interviewRepo.findByJobId(jobId);
-    }
+		String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-    public Interview completeInterview(
-            String interviewId) {
+		return interviewRepo.findByCandidateEmail(email);
+	}
 
-        Interview interview =
-                interviewRepo.findById(interviewId)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Interview not found"));
+	public List<Interview> getJobInterviews(String jobId) {
 
-        interview.setStatus(
-                "COMPLETED");
+		return interviewRepo.findByJobId(jobId);
+	}
 
-        Interview saved =
-                interviewRepo.save(interview);
+	public Interview completeInterview(String interviewId) {
 
-        Application application =
-                applicationRepo.findById(
-                        interview.getApplicationId())
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Application not found"));
+		Interview interview = interviewRepo.findById(interviewId)
+				.orElseThrow(() -> new RuntimeException("Interview not found"));
 
-        application.setStatus(
-                "INTERVIEW_COMPLETED");
+		interview.setStatus("COMPLETED");
 
-        applicationRepo.save(application);
+		Interview saved = interviewRepo.save(interview);
 
-        return saved;
-    }
+		Application application = applicationRepo.findById(interview.getApplicationId())
+				.orElseThrow(() -> new RuntimeException("Application not found"));
 
-    public Interview cancelInterview(
-            String interviewId) {
+		application.setStatus("INTERVIEW_COMPLETED");
 
-        Interview interview =
-                interviewRepo.findById(interviewId)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Interview not found"));
+		applicationRepo.save(application);
 
-        interview.setStatus(
-                "CANCELLED");
+		return saved;
+	}
 
-        return interviewRepo.save(interview);
-    }
+	public Interview cancelInterview(String interviewId) {
+
+		Interview interview = interviewRepo.findById(interviewId)
+				.orElseThrow(() -> new RuntimeException("Interview not found"));
+
+		interview.setStatus("CANCELLED");
+
+		return interviewRepo.save(interview);
+	}
 }

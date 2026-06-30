@@ -13,6 +13,7 @@ public class HireFlowProjectApplication {
 }
 
 
+
 /*
 ===============================================================================
                              H I R E F L O W   A P I
@@ -128,6 +129,7 @@ DASHBOARD APIs
 
 GET     /api/dashboard/recruiter
 
+
 Returns:
 - Total Jobs
 - Active Jobs
@@ -165,6 +167,37 @@ All APIs require:
 
 Authorization: Bearer <JWT_TOKEN>
 
+===============================================================================
+ROLES
+===============================================================================
+
+
+| Method | Endpoint                          | Description                   |
+| ------ | --------------------------------- | ----------------------------- |
+| GET    | `/api/notifications`              | Get my notifications          |
+| GET    | `/api/notifications/unread-count` | Get unread notification count |
+| PUT    | `/api/notifications/{id}/read`    | Mark notification as read     |
+| DELETE | `/api/notifications/{id}`         | Delete notification           |
+
+
+
+===============================================================================
+Notifications
+===============================================================================
+
+GET     /api/notifications
+
+GET     /api/notifications/unread-count
+
+PUT     /api/notifications/{id}/read
+
+PUT     /api/notifications/read-all
+
+DELETE  /api/notifications/{id}
+
+DELETE  /api/notifications
+
+for frontend : npm install sockjs-client stompjs
 ===============================================================================
 ROLES
 ===============================================================================
