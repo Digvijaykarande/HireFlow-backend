@@ -14,7 +14,13 @@ public class HireFlowProjectApplication {
 
 
 
+
+
 /*
+ 
+ http://localhost:8081/swagger-ui/index.html#/
+ 
+ 
 ===============================================================================
                              H I R E F L O W   A P I
 ===============================================================================
@@ -28,6 +34,18 @@ AUTHENTICATION
 
 POST    /api/auth/register              Register new user
 POST    /api/auth/login                 Login user
+
+===============================================================================
+Email OPT verification
+===============================================================================
+
+POST /api/auth/send-otp
+
+POST /api/auth/verify-otp
+
+POST /api/auth/forgot-password
+
+POST /api/auth/reset-password
 
 ===============================================================================
 USER APIs

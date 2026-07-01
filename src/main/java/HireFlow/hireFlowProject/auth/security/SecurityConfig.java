@@ -50,7 +50,15 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         .requestMatchers(
-                                "/api/auth/**","/ws/**")
+                                "/api/auth/**",
+                                //webSocket
+                                "/ws/**",
+                                // Swagger
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                //email testing
+                                "/api/test/**")
                         .permitAll()
 
                         .anyRequest()
