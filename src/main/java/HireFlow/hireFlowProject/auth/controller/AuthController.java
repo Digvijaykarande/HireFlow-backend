@@ -7,8 +7,6 @@ import HireFlow.hireFlowProject.auth.service.AuthService;
 import HireFlow.hireFlowProject.mail.dto.EmailRequest;
 import HireFlow.hireFlowProject.mail.dto.VerifyOtpRequest;
 import jakarta.validation.Valid;
-import HireFlow.hireFlowProject.auth.dto.ForgotPasswordRequest;
-import HireFlow.hireFlowProject.auth.dto.ResetPasswordRequest;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -34,10 +32,11 @@ public class AuthController {
 
 		return authService.login(request);
 	}
+	
 
 	@PostMapping("/send-otp")
-	public String sendOtp(@Valid @RequestBody EmailRequest request) {
-
+	public String sendOtp(@RequestBody EmailRequest request) {
+		System.out.println("===== SEND OTP HIT =====");
 		return authService.sendVerificationOtp(request.getEmail());
 	}
 
