@@ -63,22 +63,52 @@ public class AuthService {
 		return new AuthResponse(token, user.getEmail(), user.getRole());
 	}
 
+	// public String sendVerificationOtp(String email) {
+
+	// 	User user = userRepo.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+
+	// 	if (user.isVerified()) {
+	// 		throw new RuntimeException("Email already verified");
+	// 	}
+
+	// 	String otp = otpService.generateOtp();
+
+	// 	otpService.saveOtp(email, otp);
+
+	// 	emailService.sendOtpEmail(email, otp);
+
+	// 	return "OTP sent successfully.";
+	// }
+
 	public String sendVerificationOtp(String email) {
 
-		User user = userRepo.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+    System.out.println("STEP 1");
 
-		if (user.isVerified()) {
-			throw new RuntimeException("Email already verified");
-		}
+    User user = userRepo.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-		String otp = otpService.generateOtp();
+    System.out.println("STEP 2");
 
-		otpService.saveOtp(email, otp);
+    if (user.isVerified()) {
+        throw new RuntimeException("Email already verified");
+    }
 
-		emailService.sendOtpEmail(email, otp);
+    System.out.println("STEP 3");
 
-		return "OTP sent successfully.";
-	}
+    String otp = otpService.generateOtp();
+
+    System.out.println("OTP = " + otp);
+
+    otpService.saveOtp(email, otp);
+
+    System.out.println("STEP 4");
+
+    emailService.sendOtpEmail(email, otp);
+
+    System.out.println("STEP 5");
+
+    return "OTP sent successfully.";
+}
 
 	public String verifyOtp(String email, String otp) {
 
