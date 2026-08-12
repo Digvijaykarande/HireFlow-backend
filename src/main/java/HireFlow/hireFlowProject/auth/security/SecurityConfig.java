@@ -11,6 +11,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableMethodSecurity
@@ -31,8 +37,22 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config)
             throws Exception {
-
         return config.getAuthenticationManager();
+    }
+
+    // 1. Explicitly allow your React frontend origin and headers
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:5173")); 
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Cache-Control"));
+        configuration.setExposedHeaders(Collections.singletonList("Authorization"));
+        configuration.setAllowCredentials(true); 
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // Applies this rule universally to all endpoints
+        return source;
     }
 
     @Bean
@@ -41,6 +61,9 @@ public class SecurityConfig {
             throws Exception {
 
         http
+                // 2. Wire up the CORS filter mapping BEFORE csrf and authorizeHttpRequests
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                
                 .csrf(csrf -> csrf.disable())
 
                 .sessionManagement(session ->
@@ -48,19 +71,14 @@ public class SecurityConfig {
                                 SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(auth -> auth
-
                         .requestMatchers(
                                 "/api/auth/**",
-                                //webSocket
                                 "/ws/**",
-                                // Swagger
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                //email testing
-                                "/api/test/**")
-                        .permitAll()
-
+                                "/api/test/**"
+                        ).permitAll() // Kept these to backend path-matching routes exclusively
                         .anyRequest()
                         .authenticated())
 

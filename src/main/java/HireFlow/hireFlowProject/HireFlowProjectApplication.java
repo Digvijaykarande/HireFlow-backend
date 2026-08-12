@@ -105,7 +105,6 @@ DELETE  /api/jobs/{jobId}               Delete job
 GET     /api/jobs/search?keyword=java   Search jobs
 GET     /api/jobs/location/{location}   Filter by location
 GET     /api/jobs/status/{status}       Filter by status
-
 ===============================================================================
 APPLICATION APIs
 ===============================================================================
